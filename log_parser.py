@@ -282,6 +282,12 @@ def parse_log_file(node_info, log_file_path, db_conn):
 
     for line_num, line in get_log_line(log_file_path):
         #print(f"{line_num}")
+
+        # progress
+        if line_num % 1_000 == 0:
+            print(f"\rInput Log Line: {line_num:10,}", end='')
+
+        # basic record validation
         receipt_dt_str, remainder = valid_record(line)
         if receipt_dt_str is None:
             print(f"Error - Line: {line_num} - Invalid log record. Cannot extract datetime.")
@@ -342,11 +348,9 @@ def parse_log_file(node_info, log_file_path, db_conn):
                 print("Error - unknown record type.")
                 continue
 
-        #print(f"\rLine: {line_num:10,}", end='')
-
     print("\n\n- END-")
     print(f"Total lines processed: {line_num:,}")
-    #print(f"Output written to: {output_file_path}")
+    print(f"Input logfile        : {log_file_path.stem}")
     print("*"*10)
     print(f"Invalid Records          : {invalid_record_count:,}")
     print(f"Non-Event Records        : {non_event_record_count:,}")
